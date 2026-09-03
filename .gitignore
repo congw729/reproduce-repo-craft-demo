@@ -1,0 +1,39 @@
+# --- Secrets (never commit) ---
+.env
+agent/.env
+*.key
+*.pem
+*token*
+*credential*
+secrets.*
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# --- Node ---
+node_modules/
+frontend/node_modules/
+frontend/dist/
+
+# --- Course data & journals ---
+trades_export.csv
+trades_export*.csv
+*.broker-export.csv
+runs/
+~/.vibe-trading/
+
+# --- Team-internal (if repo initialized inside the team workspace) ---
+.team-meta/
+trajectories/
+skills/
+artifacts/
+workspaces/
+
+# --- OS ---
+.DS_Store
+Thumbs.db

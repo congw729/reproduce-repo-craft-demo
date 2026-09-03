@@ -2,10 +2,15 @@
 
 **Task:** Prepare the SwarmCraft course-demo project for GitHub backup; push when the user provides
 the repository URL.
-**Status:** **PUSH IN PROGRESS — URL RECEIVED.** Target repo:
-`https://github.com/congw729/reproduce-repo-craft-demo`. The repository is named
+**Status:** ✅ **PUSH COMPLETE.** Target repo:
+`https://github.com/congw729/reproduce-repo-craft-demo` (SSH remote
+`git@github.com:congw729/reproduce-repo-craft-demo.git`). The repository is named
 `reproduce-repo-craft-demo` (user's choice) while the project inside is branded
 **SwarmCraft** — both names are kept as-is.
+
+**Pushed:** branch `main` · 3 commits (f157861 → 7eecd75 → 7a1dc97) · verified by
+re-clone. Commit author uses GitHub noreply email
+(`115451386+congw729@users.noreply.github.com`).
 
 This document defines: (1) the file manifest to publish, (2) what must NOT be published
 (and the `.gitignore` to enforce it), (3) the recommended commit sequence, and (4) the
@@ -181,7 +186,7 @@ Execute these steps **only when the GitHub repository URL arrives** (pending fro
 |---|---|---|---|
 | 1 | GitHub repository URL — `https://github.com/congw729/reproduce-repo-craft-demo` | User | ✅ **PROVIDED** |
 | 2 | SwarmCraft `LICENSE` file (MIT + upstream attribution to HKUDS/Vibe-Trading) | doc-writer | ✅ Added |
-| 3 | Push execution | doc-writer | **IN PROGRESS** |
+| 3 | Push execution — branch `main`, HEAD `7a1dc97`, verified by re-clone | doc-writer | ✅ **COMPLETE** |
 
 *This document was prepared by the Documentation Integrator (doc-writer) as part of
 task-github-backup. All content is English; nothing has been pushed yet.*

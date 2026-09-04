@@ -88,9 +88,9 @@ h2 { font-size: clamp(30px, 4.4vw, 46px); font-weight: 900; letter-spacing: -.03
 
 /* ---------- Fact grid ---------- */
 .grid { display: grid; gap: 14px; }
-.grid.facts { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.grid.facts { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
 .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px 22px; }
-.fact-num { font-size: clamp(30px, 4vw, 40px); font-weight: 900; color: var(--text); line-height: 1.05; letter-spacing: -.03em; }
+.fact-num { font-size: clamp(20px, 3.2vw, 30px); font-weight: 900; color: var(--text); line-height: 1.1; letter-spacing: -.03em; overflow-wrap: break-word; hyphens: auto; }
 .fact-num sup { color: var(--accent-2); font-size: .55em; font-weight: 800; }
 .fact-label { font-size: 12.5px; color: var(--text-dim); margin-top: 8px; text-transform: uppercase; letter-spacing: .1em; font-weight: 700; }
 
@@ -98,8 +98,8 @@ h2 { font-size: clamp(30px, 4.4vw, 46px); font-weight: 900; letter-spacing: -.03
 .flow { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; align-items: stretch; margin: 28px 0; }
 .step { flex: 1 1 170px; max-width: 220px; background: var(--card-soft); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 16px; text-align: center; }
 .step .step-num { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: var(--text); color: var(--bg); font-weight: 900; font-size: 16px; margin-bottom: 12px; }
-.step h3 { font-size: 16px; margin-bottom: 6px; font-weight: 800; }
-.step p { font-size: 13.5px; color: var(--text-dim); }
+.step h3 { font-size: 16px; margin-bottom: 6px; font-weight: 800; overflow-wrap: break-word; hyphens: auto; }
+.step p { font-size: 13.5px; color: var(--text-dim); overflow-wrap: break-word; hyphens: auto; }
 .flow-arrow { align-self: center; color: var(--accent-2); font-size: 24px; font-weight: 900; flex: 0 0 auto; }
 @media (max-width: 900px) { .flow-arrow { transform: rotate(90deg); } }
 
@@ -113,33 +113,33 @@ h2 { font-size: clamp(30px, 4.4vw, 46px); font-weight: 900; letter-spacing: -.03
 
 /* ---------- Mini-DAG ---------- */
 .dag { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 22px 0; }
-.dag-node { background: var(--card-soft); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 16px; font-size: 14px; text-align: center; font-weight: 600; }
+.dag-node { background: var(--card-soft); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 16px; font-size: 14px; text-align: center; font-weight: 600; overflow-wrap: break-word; hyphens: auto; max-width: 100%; }
 .dag-node small { display: block; color: var(--text-dim); font-size: 12px; font-weight: 400; }
 .dag-arrow { align-self: center; color: var(--accent-2); font-weight: 900; }
 .dag-arrow.par { font-size: 13px; }
 
 /* ---------- Verification ---------- */
 .verdict-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 26px; }
-.pill { padding: 12px 22px; border-radius: 0px; font-weight: 800; font-size: 15px; display: inline-flex; align-items: center; gap: 8px; border: 2px solid var(--line); background: var(--card); }
+.pill { padding: 12px 22px; border-radius: 0px; font-weight: 800; font-size: 15px; display: inline-flex; align-items: center; gap: 8px; border: 2px solid var(--line); background: var(--card); overflow-wrap: break-word; hyphens: auto; max-width: 100%; }
 .pill.pass { color: var(--ok); border-color: var(--accent-2); background: #fff7f0; }
 table.metrics { width: 100%; border-collapse: collapse; margin: 20px 0; background: var(--card); border: 2px solid var(--text); }
 table.metrics th, table.metrics td { padding: 13px 18px; text-align: left; font-size: 14.5px; border-bottom: 1px solid var(--line); }
 table.metrics thead th { background: var(--text); color: var(--bg); font-weight: 800; letter-spacing: .05em; text-transform: uppercase; font-size: 13px; }
-table.metrics td.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; color: var(--accent-2); font-weight: 700; }
+table.metrics td.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; color: var(--accent-2); font-weight: 700; overflow-wrap: break-word; hyphens: auto; }
 .highlight-box { border-left: 6px solid var(--accent-2); background: var(--card-soft); padding: 18px 22px; border-radius: 0px; margin: 18px 0; font-size: 15px; }
 
 /* ---------- Constraint ---------- */
 .no-openai { background: var(--card); border: 2px solid var(--text); border-radius: 0px; padding: 36px; text-align: center; }
 .no-openai h3 { font-size: clamp(22px, 3vw, 28px); margin-bottom: 12px; font-weight: 900; letter-spacing: -.02em; }
 .model-chips { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 18px; }
-.chip { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13.5px; padding: 8px 16px; border-radius: 0px; background: var(--bg); border: 2px solid var(--text); color: var(--text); font-weight: 700; }
+.chip { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13.5px; padding: 8px 16px; border-radius: 0px; background: var(--bg); border: 2px solid var(--text); color: var(--text); font-weight: 700; overflow-wrap: break-word; hyphens: auto; max-width: 100%; }
 
 /* ---------- Docs ---------- */
 ul.docs { list-style: none; display: grid; gap: 10px; }
-ul.docs li a { display: flex; align-items: baseline; gap: 14px; text-decoration: none; color: var(--text); background: var(--card); border: 1px solid var(--line); border-radius: 0px; padding: 14px 20px; transition: border-color .15s, background .15s; }
+ul.docs li a { display: flex; align-items: baseline; gap: 14px; text-decoration: none; color: var(--text); background: var(--card); border: 1px solid var(--line); border-radius: 0px; padding: 14px 20px; transition: border-color .15s, background .15s; flex-wrap: wrap; }
 ul.docs li a:hover { border-color: var(--accent-2); background: #fff7f0; }
-ul.docs .fname { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--accent-2); font-weight: 800; font-size: 14.5px; flex: 0 0 auto; }
-ul.docs .fdesc { color: var(--text-dim); font-size: 14.5px; }
+ul.docs .fname { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--accent-2); font-weight: 800; font-size: 14.5px; flex: 0 1 auto; overflow-wrap: break-word; hyphens: auto; }
+ul.docs .fdesc { color: var(--text-dim); font-size: 14.5px; flex: 1 1 100%; overflow-wrap: break-word; hyphens: auto; }
 
 /* ---------- Footer ---------- */
 footer { padding: 60px 0 80px; text-align: center; color: var(--text-dim); font-size: 14.5px; border-top: 3px solid var(--text); margin-top: 10px; }
@@ -160,7 +160,7 @@ footer a { color: var(--accent-2); text-decoration: none; font-weight: 700; }
       <a href="#workflow">Workflow</a>
       <a href="#course">Course</a>
       <a href="#verification">Verification</a>
-      <a href="#constraint">Constraint</a>
+      <a href="#constraint">Built With</a>
       <a href="#docs">Docs</a>
       <a href="#credits">Credits</a>
     </div>
@@ -346,31 +346,26 @@ footer a { color: var(--accent-2); text-decoration: none; font-weight: 700; }
   </div>
 </section>
 
-<!-- ============ 6. NO-OPENAI CONSTRAINT ============ -->
+<!-- ============ 6. BUILT WITH DEEPSEEK ============ -->
 <section id="constraint">
   <div class="wrap">
-    <div class="kicker">Project-Wide Constraint</div>
+    <div class="kicker">Built With</div>
     <div class="no-openai">
-      <h3>No OpenAI GPT models — anywhere</h3>
+      <h3>Built with DeepSeek &mdash; One Model, Full Stack</h3>
       <p style="max-width:640px;margin:0 auto;color:var(--text-dim)">
-        Every LLM component of the reproduction and the course runs on
-        <strong>DeepSeek or open-source models</strong>. Vibe-Trading is provider-agnostic,
-        and the course configures only non-OpenAI endpoints — verified by
-        <code>vibe-trading provider doctor</code> in the real run above.
+        The entire SwarmCraft project &mdash; docs, reproduction verification, and this page &mdash;
+        was produced by a single model: <code>deepseek-v4-flash-0731</code> (DeepSeek).
       </p>
-      <div class="model-chips">
-        <span class="chip">deepseek-chat</span>
-        <span class="chip">deepseek-v4-flash-0731</span>
-        <span class="chip">Ollama qwen2.5:7b / 3b</span>
-        <span class="chip">OpenRouter → deepseek/*</span>
-      </div>
       <p style="margin-top:14px;font-size:13px;color:var(--text-dim)">
-        Offline classrooms can run fully key-free with Ollama; online classrooms need only
-        one DeepSeek API key — market data requires no keys at all.
+        Estimated total API cost for the whole project: ~&yen;30 CNY (&asymp; $4 USD).
+      </p>
+      <p style="margin-top:14px;font-size:13px;color:var(--text-dim)">
+        Built entirely without OpenAI GPT models.
       </p>
     </div>
   </div>
 </section>
+
 
 <!-- ============ 7. PACKAGE STRUCTURE &amp; DOCS ============ -->
 <section id="docs">

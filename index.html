@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SwarmCraft — Reproduce Vibe-Trading with a Multi-Agent Team</title>
+<style>
+  :root {
+    --bg: #0a1120;
+    --bg-soft: #0f1a2e;
+    --card: #13213a;
+    --card-soft: #182a4a;
+    --line: #24375c;
+    --text: #e8eefc;
+    --text-dim: #9fb0cc;
+    --accent: #38bdf8;
+    --accent-2: #2dd4bf;
+    --accent-3: #a78bfa;
+    --ok: #34d399;
+    --warn: #fbbf24;
+    --bad: #f87171;
+    --radius: 14px;
+    --shadow: 0 10px 30px rgba(0,0,0,.35);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: radial-gradient(1200px 600px at 20% -10%, #14264a 0%, var(--bg) 55%);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 28px; }
+
+  /* ---------- Hero ---------- */
+  header.hero {
+    padding: 88px 0 64px;
+    text-align: center;
+    border-bottom: 1px solid var(--line);
+    background: radial-gradient(900px 420px at 50% -20%, rgba(56,189,248,.16) 0%, transparent 60%);
+  }
+  .badge {
+    display: inline-block;
+    font-size: 13px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    border: 1px solid rgba(45,212,191,.35);
+    border-radius: 999px;
+    padding: 6px 16px;
+    margin-bottom: 22px;
+    background: rgba(45,212,191,.08);
+  }
+  h1 {
+    font-size: clamp(38px, 6vw, 64px);
+    font-weight: 800;
+    letter-spacing: -.02em;
+    background: linear-gradient(100deg, #fff 20%, var(--accent) 55%, var(--accent-2) 80%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 14px;
+  }
+  .tagline { font-size: clamp(18px, 2.6vw, 26px); color: var(--text-dim); font-weight: 500; margin-bottom: 26px; }
+  .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    display: inline-block;
+    padding: 12px 26px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-primary { background: linear-gradient(100deg, var(--accent), var(--accent-2)); color: #06121f; box-shadow: 0 8px 24px rgba(56,189,248,.3); }
+  .btn-ghost { border: 1px solid var(--line); color: var(--text); background: rgba(255,255,255,.03); }
+  .btn:hover { transform: translateY(-2px); }
+  .hero-meta { margin-top: 30px; font-size: 14px; color: var(--text-dim); }
+
+  /* ---------- Sections ---------- */
+  section { padding: 64px 0; border-bottom: 1px solid var(--line); }
+  .kicker {
+    font-size: 13px; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--accent); font-weight: 700; margin-bottom: 8px;
+  }
+  h2 { font-size: clamp(26px, 3.4vw, 36px); font-weight: 750; letter-spacing: -.01em; margin-bottom: 12px; }
+  .lead { color: var(--text-dim); max-width: 760px; margin-bottom: 30px; }
+
+  /* ---------- Fact grid ---------- */
+  .grid { display: grid; gap: 16px; }
+  .grid.facts { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+  }
+  .fact-num { font-size: 28px; font-weight: 800; color: var(--accent); line-height: 1.2; }
+  .fact-label { font-size: 13px; color: var(--text-dim); margin-top: 4px; }
+
+  /* ---------- Workflow flow (pure CSS) ---------- */
+  .flow { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; align-items: stretch; margin: 26px 0; }
+  .step {
+    flex: 1 1 170px; max-width: 220px;
+    background: var(--card-soft); border: 1px solid var(--line); border-radius: 12px;
+    padding: 18px 14px; text-align: center; position: relative;
+  }
+  .step .step-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 34px; height: 34px; border-radius: 50%;
+    background: linear-gradient(120deg, var(--accent), var(--accent-2));
+    color: #06121f; font-weight: 800; font-size: 15px; margin-bottom: 10px;
+  }
+  .step h3 { font-size: 15.5px; margin-bottom: 6px; }
+  .step p { font-size: 13px; color: var(--text-dim); }
+  .flow-arrow { align-self: center; color: var(--accent); font-size: 22px; font-weight: 800; flex: 0 0 auto; }
+  @media (max-width: 900px) { .flow-arrow { transform: rotate(90deg); } }
+
+  /* ---------- Timeline ---------- */
+  .timeline { display: grid; gap: 12px; }
+  .tl-item {
+    display: grid; grid-template-columns: 96px 1fr;
+    gap: 18px; align-items: baseline;
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px;
+  }
+  .tl-time { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--accent); font-size: 14px; font-weight: 700; }
+  .tl-body h3 { font-size: 16px; margin-bottom: 2px; }
+  .tl-body p { font-size: 14px; color: var(--text-dim); }
+  @media (max-width: 640px) { .tl-item { grid-template-columns: 1fr; gap: 4px; } }
+
+  /* ---------- Mini-DAG ---------- */
+  .dag { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0; }
+  .dag-node {
+    background: var(--card-soft); border: 1px solid var(--line); border-radius: 10px;
+    padding: 10px 16px; font-size: 14px; text-align: center;
+  }
+  .dag-node small { display: block; color: var(--text-dim); font-size: 12px; }
+  .dag-arrow { align-self: center; color: var(--accent-2); font-weight: 700; }
+  .dag-arrow.par { color: var(--accent-3); font-size: 13px; }
+
+  /* ---------- Verification ---------- */
+  .verdict-row { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 24px; }
+  .pill {
+    padding: 10px 20px; border-radius: 999px; font-weight: 700; font-size: 15px;
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid var(--line); background: var(--card);
+  }
+  .pill.pass { color: var(--ok); border-color: rgba(52,211,153,.4); }
+  table.metrics {
+    width: 100%; border-collapse: collapse; margin: 18px 0;
+    background: var(--card); border-radius: 12px; overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  table.metrics th, table.metrics td { padding: 12px 16px; text-align: left; font-size: 14.5px; }
+  table.metrics thead th { background: var(--card-soft); color: var(--accent); font-weight: 700; letter-spacing: .03em; }
+  table.metrics tbody tr:nth-child(even) { background: rgba(255,255,255,.02); }
+  table.metrics td.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; color: var(--text-dim); }
+  .highlight-box {
+    border-left: 4px solid var(--accent-3);
+    background: rgba(167,139,250,.08);
+    padding: 16px 20px; border-radius: 10px; margin: 16px 0; font-size: 14.5px;
+  }
+
+  /* ---------- Constraint ---------- */
+  .no-openai {
+    background: linear-gradient(120deg, rgba(56,189,248,.1), rgba(45,212,191,.1));
+    border: 1px solid rgba(56,189,248,.3); border-radius: var(--radius);
+    padding: 30px; text-align: center;
+  }
+  .no-openai h3 { font-size: 22px; margin-bottom: 10px; }
+  .model-chips { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 16px; }
+  .chip {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 13.5px; padding: 8px 14px; border-radius: 999px;
+    background: var(--card); border: 1px solid var(--line); color: var(--accent-2);
+  }
+
+  /* ---------- Docs list ---------- */
+  ul.docs { list-style: none; display: grid; gap: 10px; }
+  ul.docs li a {
+    display: flex; align-items: baseline; gap: 12px;
+    text-decoration: none; color: var(--text);
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px 18px; transition: border-color .15s ease, background .15s ease;
+  }
+  ul.docs li a:hover { border-color: var(--accent); background: var(--card-soft); }
+  ul.docs .fname { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--accent); font-weight: 600; font-size: 14.5px; flex: 0 0 auto; }
+  ul.docs .fdesc { color: var(--text-dim); font-size: 14px; }
+
+  /* ---------- Footer ---------- */
+  footer { padding: 48px 0 64px; text-align: center; color: var(--text-dim); font-size: 14px; }
+  footer .credit { margin-bottom: 10px; }
+  footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<!-- ============ 1. HERO ============ -->
+<header class="hero">
+  <div class="wrap">
+    <span class="badge">Multi-Agent Course Demo &middot; 2026</span>
+    <h1>SwarmCraft</h1>
+    <p class="tagline">Reproduce Vibe-Trading with a Multi-Agent Team</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="https://github.com/congw729/reproduce-repo-craft-demo" target="_blank" rel="noopener">View on GitHub</a>
+      <a class="btn btn-ghost" href="#workflow">See the Multi-Agent Workflow</a>
+    </div>
+    <p class="hero-meta">A hands-on workshop where students rebuild a real open-source quant trading agent &mdash; <strong>together</strong>, the way a multi-agent team would.</p>
+  </div>
+</header>
+
+<!-- ============ 2. WHAT &amp; WHY ============ -->
+<section id="what">
+  <div class="wrap">
+    <div class="kicker">What &amp; Why</div>
+    <h2>Rebuild a real project, learn multi-agent collaboration</h2>
+    <p class="lead">
+      SwarmCraft teaches students how to reproduce
+      <strong>HKUDS/Vibe-Trading</strong> &mdash; an open-source, LLM-powered multi-agent trading
+      system (MIT license, ~32.3k GitHub stars, 5.2k+ forks) &mdash; using
+      <strong>JiuwenSwarm-style workflows</strong>: decompose a goal into tasks, assign
+      roles, spawn members, build a task DAG, and run review loops. The reproduction is the
+      vehicle; the multi-agent skills are the lesson.
+    </p>
+    <div class="grid facts">
+      <div class="card"><div class="fact-num">Python 3.11+</div><div class="fact-label">Backend stack</div></div>
+      <div class="card"><div class="fact-num">LangChain 1.x</div><div class="fact-label">Agent orchestration</div></div>
+      <div class="card"><div class="fact-num">React 19</div><div class="fact-label">Web frontend</div></div>
+      <div class="card"><div class="fact-num">107</div><div class="fact-label">Auto-discovered tools</div></div>
+      <div class="card"><div class="fact-num">90</div><div class="fact-label">Bundled skills</div></div>
+      <div class="card"><div class="fact-num">462</div><div class="fact-label">Alpha zoo factors</div></div>
+      <div class="card"><div class="fact-num">30</div><div class="fact-label">Swarm team presets</div></div>
+      <div class="card"><div class="fact-num">555</div><div class="fact-label">Test files</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. MULTI-AGENT WORKFLOW ============ -->
+<section id="workflow">
+  <div class="wrap">
+    <div class="kicker">The Pedagogy Core</div>
+    <h2>The multi-agent workflow</h2>
+    <p class="lead">
+      Every step below is demonstrated live in class. Students copy the <em>pattern</em>,
+      then apply it to a real backtest with their own mini-swarm.
+    </p>
+    <div class="flow">
+      <div class="step">
+        <span class="step-num">1</span>
+        <h3>build_team</h3>
+        <p>A swarm starts with a <em>goal</em>, not with code. The leader defines the goal; the leader never executes tasks.</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="step">
+        <span class="step-num">2</span>
+        <h3>spawn_teammate</h3>
+        <p>Instantiate members with named roles &amp; boundaries: researcher, developer, QA reviewer, doc-writer.</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="step">
+        <span class="step-num">3</span>
+        <h3>create_task (DAG)</h3>
+        <p>Tasks declare dependencies (<code>blocked_by</code>) and context passing — a directed acyclic graph of deliverables.</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="step">
+        <span class="step-num">4</span>
+        <h3>broadcast</h3>
+        <p>Members only start when told: kickoff over the channel; artifacts land in the shared workspace.</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="step">
+        <span class="step-num">5</span>
+        <h3>review / verify</h3>
+        <p>A reviewer gates each deliverable: <em>pass</em> completes it, <em>fail</em> sends it back for rework — only the failed subgraph re-runs.</p>
+      </div>
+    </div>
+    <div class="highlight-box">
+      <strong>Meta-insight:</strong> the very project students reproduce — Vibe-Trading — ships its own
+      swarm DAG engine with 30 preset teams (e.g. <code>equity_research_team</code>:
+      macro_analyst → sector_analyst → stock_picker → aggregator). Multi-agent
+      collaboration is both the <em>tool</em> and the <em>subject</em> of this course.
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4. COURSE AT A GLANCE ============ -->
+<section id="course">
+  <div class="wrap">
+    <div class="kicker">Course at a Glance</div>
+    <h2>A 2-hour hands-on workshop</h2>
+    <p class="lead">For 12–40 students with basic Python + git skills, working in mini-swarms of 4–5. Variants for 1.5h and 2.5h are included.</p>
+
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-time">0:00–0:10</div><div class="tl-body"><h3>Welcome &amp; Hook</h3><p>Why multi-agent? This very course was designed by a multi-agent swarm. Class poll.</p></div></div>
+      <div class="tl-item"><div class="tl-time">0:10–0:30</div><div class="tl-body"><h3>Core Concepts</h3><p>Swarm anatomy: leader / members / task board / DAG / messages / plan approval / review loops.</p></div></div>
+      <div class="tl-item"><div class="tl-time">0:30–0:55</div><div class="tl-body"><h3>Live Demo</h3><p>Instructor runs a real swarm live: build_team → spawn → create_task → broadcast → review → complete.</p></div></div>
+      <div class="tl-item"><div class="tl-time">0:55–1:40</div><div class="tl-body"><h3>Hands-On Mini-Swarms</h3><p>Teams of 4–5 reproduce a small Vibe-Trading slice (see the exercise below).</p></div></div>
+      <div class="tl-item"><div class="tl-time">1:40–1:50</div><div class="tl-body"><h3>Show &amp; Debrief</h3><p>2–3 teams demo their backtest result and their task-board journey.</p></div></div>
+      <div class="tl-item"><div class="tl-time">1:50–2:05</div><div class="tl-body"><h3>Discussion &amp; Reflection</h3><p>Guided questions + exit ticket: "name one workflow concept you'll apply next week".</p></div></div>
+    </div>
+
+    <div class="kicker" style="margin-top:34px">Mini-Swarm Exercise</div>
+    <h2 style="font-size:clamp(20px,2.6vw,26px)">One moving-average backtest, six tasks, one mini-DAG</h2>
+    <p class="lead">
+      Team goal: <em>“Run one moving-average crossover backtest with Vibe-Trading’s
+      engine, and produce a 5-line report.”</em> It maps to the repo’s real pipeline
+      — data loader → strategy → backtest engine → metrics/report — and works with
+      zero data API keys.
+    </p>
+    <div class="dag">
+      <div class="dag-node">T1 Install &amp; verify<small>Researcher</small></div>
+      <div class="dag-arrow">→</div>
+      <div class="dag-node">T2 Data path<small>Data member</small></div>
+      <div class="dag-arrow par">→ T3 Strategy (SMA 20/50)</div>
+      <div class="dag-arrow">→</div>
+      <div class="dag-node">T4 Run backtest<small>Developer</small></div>
+      <div class="dag-arrow">→</div>
+      <div class="dag-node">T5 Review outputs<small>Reviewer (may reject)</small></div>
+      <div class="dag-arrow">→</div>
+      <div class="dag-node">T6 5-line summary<small>Scribe</small></div>
+    </div>
+    <p style="font-size:14px;color:var(--text-dim);text-align:center">
+      Dependencies: T1 unlocks everything; T2 &amp; T3 run in parallel; then T4 → T5 → T6.
+      A “bad” backtest is a successful exercise if the review loop caught it.
+    </p>
+  </div>
+</section>
+
+<!-- ============ 5. REAL-WORLD VERIFICATION ============ -->
+<section id="verification">
+  <div class="wrap">
+    <div class="kicker">Proven on Real Hardware</div>
+    <h2>Real-world verification results</h2>
+    <p class="lead">
+      The reproduction plan was executed for real on a macOS machine (Apple Silicon,
+      Python 3.12.0, <code>vibe-trading-ai 0.1.14</code>) — not simulated. Milestones 0–2
+      pass; the natural-language M2 backtest completed end to end with a clean
+      <code>.env</code> and zero environment overrides (run
+      <code>20260904_034247_45_533cf1</code>).
+    </p>
+    <div class="verdict-row">
+      <span class="pill pass">✓ M0 — Environment &amp; clone: PASS</span>
+      <span class="pill pass">✓ M1 — Install &amp; CLI boot: PASS</span>
+      <span class="pill pass">✓ M2 — End-to-end backtest: PASS</span>
+    </div>
+
+    <h3 style="font-size:20px;margin:10px 0 4px">M2 run card — BTC-USDT 20/50 moving-average (2024)</h3>
+    <table class="metrics">
+      <thead>
+        <tr><th>Metric</th><th>Value</th><th>Metric</th><th>Value</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>total_return</td><td><strong>+31.63%</strong></td><td>max_drawdown</td><td><strong>-40.12%</strong></td></tr>
+        <tr><td>sharpe</td><td><strong>0.733</strong></td><td>trade_count</td><td><strong>5</strong></td></tr>
+        <tr><td>annual_return</td><td>+31.53%</td><td>win_rate</td><td>0.40</td></tr>
+        <tr><td>final_value</td><td>1,316,307.28 (initial 1,000,000)</td><td>profit_loss_ratio</td><td>3.30</td></tr>
+        <tr><td>engine</td><td>daily</td><td>interval</td><td>1D (2023-09-01 → 2024-12-31)</td></tr>
+        <tr><td>provider</td><td class="mono">openrouter → tokendance.space</td><td>model</td><td class="mono">deepseek-v4-flash-0731</td></tr>
+        <tr><td>run id</td><td class="mono">20260904_034247_45_533cf1</td><td>LLM usage</td><td class="mono">~2.99M tokens, 28 iterations</td></tr>
+      </tbody>
+    </table>
+
+    <div class="highlight-box">
+      <strong>Live fallback-chain finding:</strong> the agent requested <code>okx</code> as the
+      data source, but because OKX is unreachable on that network, the built-in crypto
+      fallback chain (<code>okx → ccxt → binance → ...</code>) automatically served bars from
+      <strong>Binance</strong>. Crypto backtests work even when a preferred host is blocked —
+      a real-world demonstration of the plan’s documented fallback behavior.
+      Consistency check: the yfinance-based retry produced +31.61% / -40.13% / 5 trades —
+      nearly identical, confirming the strategy is reproducible across data vendors.
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6. NO-OPENAI CONSTRAINT ============ -->
+<section id="constraint">
+  <div class="wrap">
+    <div class="kicker">Project-Wide Constraint</div>
+    <div class="no-openai">
+      <h3>No OpenAI GPT models — anywhere</h3>
+      <p style="max-width:640px;margin:0 auto;color:var(--text-dim)">
+        Every LLM component of the reproduction and the course runs on
+        <strong>DeepSeek or open-source models</strong>. Vibe-Trading is provider-agnostic,
+        and the course configures only non-OpenAI endpoints — verified by
+        <code>vibe-trading provider doctor</code> in the real run above.
+      </p>
+      <div class="model-chips">
+        <span class="chip">deepseek-chat</span>
+        <span class="chip">deepseek-v4-flash-0731</span>
+        <span class="chip">Ollama qwen2.5:7b / 3b</span>
+        <span class="chip">OpenRouter → deepseek/*</span>
+      </div>
+      <p style="margin-top:14px;font-size:13px;color:var(--text-dim)">
+        Offline classrooms can run fully key-free with Ollama; online classrooms need only
+        one DeepSeek API key — market data requires no keys at all.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7. PACKAGE STRUCTURE &amp; DOCS ============ -->
+<section id="docs">
+  <div class="wrap">
+    <div class="kicker">Package Contents</div>
+    <h2>What’s in the SwarmCraft repository</h2>
+    <p class="lead">
+      The full course package is a set of English Markdown documents produced by the
+      multi-agent team itself — click any file to open it from this workspace.
+    </p>
+    <ul class="docs">
+      <li><a href="README.md"><span class="fname">README.md</span><span class="fdesc">Project overview, verified facts, course usage, credits &amp; MIT license note</span></a></li>
+      <li><a href="VERIFICATION.md"><span class="fname">VERIFICATION.md</span><span class="fdesc">Env pre-checks, smoke test, M0–M6 milestone gates, safety checklist</span></a></li>
+      <li><a href="docs/repo-analysis.md"><span class="fname">docs/repo-analysis.md</span><span class="fdesc">Repository analysis of Vibe-Trading 0.1.14 (architecture, stack, blockers)</span></a></li>
+      <li><a href="docs/reproduction-plan.md"><span class="fname">docs/reproduction-plan.md</span><span class="fdesc">Staged reproduction plan — Milestones 0–6 with verify gates &amp; fallbacks</span></a></li>
+      <li><a href="docs/course-design.md"><span class="fname">docs/course-design.md</span><span class="fdesc">Course syllabus, live demo script, mini-swarm exercises, instructor checklist</span></a></li>
+      <li><a href="docs/llm-provider-guidance.md"><span class="fname">docs/llm-provider-guidance.md</span><span class="fdesc">DeepSeek / open-source LLM setup — no OpenAI anywhere</span></a></li>
+      <li><a href="verification-run.md"><span class="fname">verification-run.md</span><span class="fdesc">Real-world M0–M2 verification run — metrics, fallback-chain finding</span></a></li>
+      <li><a href="github-backup.md"><span class="fname">github-backup.md</span><span class="fdesc">Backup manifest, .gitignore, commit sequence, push checklist</span></a></li>
+      <li><a href="LICENSE"><span class="fname">LICENSE</span><span class="fdesc">MIT license + attribution to HKUDS/Vibe-Trading</span></a></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 8. FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <p class="credit">
+      <strong>SwarmCraft</strong> is an educational re-implementation built around
+      <a href="https://github.com/HKUDS/Vibe-Trading" target="_blank" rel="noopener">HKUDS/Vibe-Trading</a>
+      — <em>“Vibe-Trading: Your Personal Trading Agent”</em> — released under the
+      <strong>MIT License</strong>.
+    </p>
+    <p class="credit">
+      This course package is a separate documentation project; it is not affiliated with or
+      endorsed by HKUDS. No OpenAI GPT models are used anywhere in this course.
+    </p>
+    <p>SwarmCraft · Multi-Agent Course Demo · 2026</p>
+  </div>
+</footer>
+
+</body>
+</html>

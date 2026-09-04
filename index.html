@@ -318,30 +318,33 @@ footer a { color: var(--accent-2); text-decoration: none; font-weight: 700; }
       <span class="pill pass">✓ M2 — End-to-end backtest: PASS</span>
     </div>
 
-    <h3 style="font-size:20px;margin:10px 0 4px">M2 run card — BTC-USDT 20/50 moving-average (2024)</h3>
+    <h3 style="font-size:20px;margin:10px 0 4px">M2 run card &mdash; BTC-USDT 20/50 moving-average (2024): three real runs</h3>
     <table class="metrics">
       <thead>
-        <tr><th>Metric</th><th>Value</th><th>Metric</th><th>Value</th></tr>
+        <tr><th>Run (id)</th><th>Data source</th><th>total_return</th><th>max_drawdown</th><th>sharpe</th><th>trades</th></tr>
       </thead>
       <tbody>
-        <tr><td>total_return</td><td><strong>+31.63%</strong></td><td>max_drawdown</td><td><strong>-40.12%</strong></td></tr>
-        <tr><td>sharpe</td><td><strong>0.733</strong></td><td>trade_count</td><td><strong>5</strong></td></tr>
-        <tr><td>annual_return</td><td>+31.53%</td><td>win_rate</td><td>0.40</td></tr>
-        <tr><td>final_value</td><td>1,316,307.28 (initial 1,000,000)</td><td>profit_loss_ratio</td><td>3.30</td></tr>
-        <tr><td>engine</td><td>daily</td><td>interval</td><td>1D (2023-09-01 → 2024-12-31)</td></tr>
-        <tr><td>provider</td><td class="mono">openrouter → tokendance.space</td><td>model</td><td class="mono">deepseek-v4-flash-0731</td></tr>
-        <tr><td>run id</td><td class="mono">20260904_034247_45_533cf1</td><td>LLM usage</td><td class="mono">~2.99M tokens, 28 iterations</td></tr>
+        <tr><td class="mono">OKX &middot; 20260904_154229_75_633371</td><td><strong>okx (primary)</strong></td><td><strong>+26.44%</strong></td><td><strong>-38.33%</strong></td><td><strong>0.644</strong></td><td><strong>5</strong></td></tr>
+        <tr><td class="mono">Binance &middot; 20260904_034247_45_533cf1</td><td>binance (fallback)</td><td>+31.63%</td><td>-40.12%</td><td>0.733</td><td>5</td></tr>
+        <tr><td class="mono">yfinance &middot; 20260904_031219_06_76ccf1</td><td>yfinance</td><td>+31.61%</td><td>-40.13%</td><td>0.607</td><td>5</td></tr>
       </tbody>
     </table>
+    <p style="font-size:14px;color:var(--text-dim)">
+      The <strong>OKX run</strong> (<code>data_sources = ["okx"]</code>, no fallback) proves the primary
+      data source now works end-to-end. Same strategy, same 5 trades, same win rate (0.40) across all
+      three vendors; the OKX return gap (+26.44% vs +31.6%) is explained by its 1&ndash;2 month shorter
+      data window (2023-11-01 vs 2023-09/10-01), not data quality.
+    </p>
 
     <div class="highlight-box">
-      <strong>Live fallback-chain finding:</strong> the agent requested <code>okx</code> as the
-      data source, but because OKX is unreachable on that network, the built-in crypto
-      fallback chain (<code>okx → ccxt → binance → ...</code>) automatically served bars from
-      <strong>Binance</strong>. Crypto backtests work even when a preferred host is blocked —
-      a real-world demonstration of the plan’s documented fallback behavior.
-      Consistency check: the yfinance-based retry produced +31.61% / -40.13% / 5 trades —
-      nearly identical, confirming the strategy is reproducible across data vendors.
+      <strong>Fallback chain proven in both directions:</strong> in the earliest runs OKX was
+      unreachable, so the built-in crypto fallback chain (<code>okx &rarr; ccxt &rarr; binance &rarr; ...</code>)
+      automatically served bars from <strong>Binance</strong> &mdash; crypto backtests work even when a
+      preferred host is blocked. With the network fixed, the latest run used <strong>OKX directly</strong>
+      as the primary source, end to end (<code>data_sources = ["okx"]</code>). Strategy-level results are
+      reproducible across vendors (5/5 trades, identical signal dates, win rate 0.40); metric deltas are
+      window/vendor-driven. LLM config for all runs: provider <code>openrouter &rarr; tokendance.space</code>,
+      model <code>deepseek-v4-flash-0731</code>.
     </div>
   </div>
 </section>
